@@ -1,7 +1,7 @@
 def get_data
   procs = []
   # Get CPU usage, Mem usage and the name of each proc running
-  `ps -Aro %cpu,%mem,comm`.each_line do |line|
+  IO.popen('ps -Aro %cpu,%mem,comm').each_line do |line|
     proc_data = line.split
     procs << [ proc_data[2].split('/')[-1], proc_data[0].to_f, proc_data[1].to_f ]
   end
