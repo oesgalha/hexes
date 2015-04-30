@@ -1,1 +1,4 @@
 /.git
+bin/*
+!bin/.gitkeep
+mruby/
