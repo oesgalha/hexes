@@ -1,5 +1,9 @@
-MRuby::CrossBuild.new('hexes') do |conf|
-  toolchain :gcc
+MRuby::Build.new do |conf|
+  if ENV['VisualStudioVersion'] || ENV['VSINSTALLDIR']
+    toolchain :visualcpp
+  else
+    toolchain :gcc
+  end
 
   conf.gembox 'default'
   conf.gem '../../hexes'
