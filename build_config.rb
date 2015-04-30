@@ -1,9 +1,8 @@
-MRuby::CrossBuild.new('minimal') do |conf|
+MRuby::CrossBuild.new('hexes') do |conf|
   toolchain :gcc
 
   conf.gembox 'default'
+  conf.gem '../../hexes'
   conf.gem github: 'iij/mruby-io'
-
-  conf.cc.defines = %w(DISABLE_STDIO)
-  conf.bins = []
+  conf.gem github: 'matsumoto-r/mruby-sleep'
 end
