@@ -15,9 +15,14 @@ mrb_curses_initialize(mrb_state *mrb, mrb_value self)
 static mrb_value
 mrb_curses_shutdown(mrb_state *mrb, mrb_value self)
 {
-  refresh();
-  sleep(1);
   endwin();
+  return self;
+}
+
+static mrb_value
+mrb_curses_refresh(mrb_state *mrb, mrb_value self)
+{
+  refresh();
   return self;
 }
 
@@ -63,6 +68,7 @@ mrb_hexes_gem_init(mrb_state* mrb) {
   struct RClass *curses_module = mrb_define_module(mrb, "Curses");
   mrb_define_class_method(mrb, curses_module, "initialize", mrb_curses_initialize, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, curses_module, "shutdown", mrb_curses_shutdown, MRB_ARGS_NONE());
+  mrb_define_class_method(mrb, curses_module, "refresh", mrb_curses_refresh, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, curses_module, "draw_panel", mrb_draw_panel, MRB_ARGS_REQ(5));
 }
 
