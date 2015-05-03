@@ -62,6 +62,22 @@ mrb_curses_acs(mrb_state *mrb, mrb_value self)
 }
 
 static mrb_value
+mrb_curses_width(mrb_state *mrb, mrb_value self)
+{
+  mrb_int width, height;
+  getmaxyx(stdscr, height, width);
+  return mrb_fixnum_value(width);
+}
+
+static mrb_value
+mrb_curses_height(mrb_state *mrb, mrb_value self)
+{
+  mrb_int width, height;
+  getmaxyx(stdscr, height, width);
+  return mrb_fixnum_value(height);
+}
+
+static mrb_value
 mrb_curses_refresh(mrb_state *mrb, mrb_value self)
 {
   refresh();
@@ -91,8 +107,9 @@ mrb_hexes_gem_init(mrb_state* mrb) {
   mrb_define_class_method(mrb, curses_module, "move", mrb_curses_move, MRB_ARGS_REQ(2));
   mrb_define_class_method(mrb, curses_module, "type", mrb_curses_addchars, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, curses_module, "type_special", mrb_curses_acs, MRB_ARGS_REQ(1));
+  mrb_define_class_method(mrb, curses_module, "width", mrb_curses_width, MRB_ARGS_NONE());
+  mrb_define_class_method(mrb, curses_module, "height", mrb_curses_height, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, curses_module, "shutdown", mrb_curses_shutdown, MRB_ARGS_NONE());  
-  mrb_define_class_method(mrb, curses_module, "draw_panel", mrb_draw_panel, MRB_ARGS_REQ(5));
 }
 
 void
