@@ -24,11 +24,39 @@ mrb_curses_move(mrb_state *mrb, mrb_value self)
 static mrb_value
 mrb_curses_addchars(mrb_state *mrb, mrb_value self)
 {
-  int i;
+  size_t i;
   char* string;
   mrb_get_args(mrb, "z", &string);
   for (i = 0; i < strlen(string); i++) {
     addch(string[i]);
+  }
+  return self;
+}
+
+static mrb_value
+mrb_curses_acs(mrb_state *mrb, mrb_value self)
+{
+  mrb_int idx;
+  mrb_get_args(mrb, "i", &idx);
+  switch(idx) {
+    case 0:
+      addch(ACS_ULCORNER);
+      break;
+    case 1:
+      addch(ACS_URCORNER);
+      break;
+    case 2:
+      addch(ACS_LLCORNER);
+      break;
+    case 3:
+      addch(ACS_LRCORNER);
+      break;
+    case 4:
+      addch(ACS_HLINE);
+      break;
+    case 5:
+      addch(ACS_VLINE);
+      break;
   }
   return self;
 }
@@ -47,50 +75,22 @@ mrb_curses_shutdown(mrb_state *mrb, mrb_value self)
   return self;
 }
 
-static mrb_value
-mrb_draw_panel(mrb_state *mrb, mrb_value self)
-{
-  char* panel_title;
-  mrb_int x, y, w, h;
-  mrb_get_args(mrb, "ziiii", &panel_title, &x, &y, &w, &h);
-  
-  move(y, x);
-  addch(ACS_ULCORNER);
-  int i, j = 1;
-  addch (ACS_HLINE);
-  for (i = 0; i < strlen(panel_title); i++) {
-    addch(panel_title[i]);
-    j++;
-  }
-
-  for ( ;  j < w;  j++) {
-    addch (ACS_HLINE);
-  }
-  addch (ACS_URCORNER);   // upper right
-
-  for(j = 0; j < h; j++) {
-    move(y+1+j, x );
-    addch(ACS_VLINE);
-    move(y+1+j, x+w+1 );
-    addch(ACS_VLINE);
-  }
-
-  move(y+h+1,x);
-  addch(ACS_LLCORNER);   // lower left corner
-
-  for(j = 0;  j < w;  ++j)
-      addch(ACS_HLINE);
-  addch(ACS_LRCORNER);   // lower right
-  return self;
-}
-
 void
 mrb_hexes_gem_init(mrb_state* mrb) {
   struct RClass *curses_module = mrb_define_module(mrb, "Curses");
+
+  mrb_define_const(mrb, curses_module, "ULCORNER", mrb_fixnum_value(0));
+  mrb_define_const(mrb, curses_module, "URCORNER", mrb_fixnum_value(1));
+  mrb_define_const(mrb, curses_module, "LLCORNER", mrb_fixnum_value(2));
+  mrb_define_const(mrb, curses_module, "LRCORNER", mrb_fixnum_value(3));
+  mrb_define_const(mrb, curses_module, "HLINE", mrb_fixnum_value(4));
+  mrb_define_const(mrb, curses_module, "VLINE", mrb_fixnum_value(5));
+
   mrb_define_class_method(mrb, curses_module, "initialize", mrb_curses_initialize, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, curses_module, "refresh", mrb_curses_refresh, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, curses_module, "move", mrb_curses_move, MRB_ARGS_REQ(2));
   mrb_define_class_method(mrb, curses_module, "type", mrb_curses_addchars, MRB_ARGS_REQ(1));
+  mrb_define_class_method(mrb, curses_module, "type_special", mrb_curses_acs, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, curses_module, "shutdown", mrb_curses_shutdown, MRB_ARGS_NONE());  
   mrb_define_class_method(mrb, curses_module, "draw_panel", mrb_draw_panel, MRB_ARGS_REQ(5));
 }

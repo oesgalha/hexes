@@ -1,9 +1,9 @@
 begin
   Curses.initialize
-  Curses.draw_panel("Hello World!", 0, 0, 30, 12)
-  Curses.draw_panel("Uuuuuu", 40, 12, 30, 12)
+  panel = Panel.new("Hello World!", 0, 0, 30, 12)
+  panel.refresh
   Curses.refresh
-  Sleep::sleep(1)
+  Sleep::sleep(10)
 ensure
   Curses.shutdown
 end
