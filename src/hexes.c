@@ -13,9 +13,23 @@ mrb_curses_initialize(mrb_state *mrb, mrb_value self)
 }
 
 static mrb_value
-mrb_curses_shutdown(mrb_state *mrb, mrb_value self)
+mrb_curses_move(mrb_state *mrb, mrb_value self)
 {
-  endwin();
+  mrb_int x, y;
+  mrb_get_args(mrb, "ii", &x, &y);
+  move(y, x);
+  return self;
+}
+
+static mrb_value
+mrb_curses_addchars(mrb_state *mrb, mrb_value self)
+{
+  int i;
+  char* string;
+  mrb_get_args(mrb, "z", &string);
+  for (i = 0; i < strlen(string); i++) {
+    addch(string[i]);
+  }
   return self;
 }
 
@@ -27,11 +41,9 @@ mrb_curses_refresh(mrb_state *mrb, mrb_value self)
 }
 
 static mrb_value
-mrb_curses_move(mrb_state *mrb, mrb_value self)
+mrb_curses_shutdown(mrb_state *mrb, mrb_value self)
 {
-  mrb_int x, y;
-  mrb_get_args(mrb, "ii", &x, &y);
-  move(y, x);
+  endwin();
   return self;
 }
 
@@ -78,6 +90,7 @@ mrb_hexes_gem_init(mrb_state* mrb) {
   mrb_define_class_method(mrb, curses_module, "initialize", mrb_curses_initialize, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, curses_module, "refresh", mrb_curses_refresh, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, curses_module, "move", mrb_curses_move, MRB_ARGS_REQ(2));
+  mrb_define_class_method(mrb, curses_module, "type", mrb_curses_addchars, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, curses_module, "shutdown", mrb_curses_shutdown, MRB_ARGS_NONE());  
   mrb_define_class_method(mrb, curses_module, "draw_panel", mrb_draw_panel, MRB_ARGS_REQ(5));
 }
