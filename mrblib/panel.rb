@@ -1,10 +1,9 @@
 class Panel
-  def initialize(label, x, y, width, height)
+
+  attr_accessor :x, :y, :width, :height
+
+  def initialize(label)
     @label = label
-    @x = x
-    @y = y
-    @width = width
-    @height = height
   end
 
   def refresh
@@ -15,9 +14,9 @@ class Panel
     (@width - @label.size - 3).times { Curses.type_special(Curses::HLINE) }
     Curses.type_special(Curses::URCORNER)
     for i in 1...@height
-      Curses.move(@x, i)
+      Curses.move(@x, @y + i)
       Curses.type_special(Curses::VLINE)
-      Curses.move(@x + @width - 1, i)
+      Curses.move(@x + @width - 1, @y + i)
       Curses.type_special(Curses::VLINE)
     end
     Curses.move(@x, @y + @height - 1)
